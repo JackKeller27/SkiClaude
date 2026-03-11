@@ -1,0 +1,22 @@
+-- CreateTable
+CREATE TABLE "Resort" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "state" TEXT NOT NULL,
+    "lat" REAL NOT NULL,
+    "lng" REAL NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "Trip" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "resortId" INTEGER NOT NULL,
+    "date" DATETIME NOT NULL,
+    "visitNumber" INTEGER NOT NULL,
+    "companions" TEXT NOT NULL DEFAULT '',
+    "favoriteRun" TEXT NOT NULL DEFAULT '',
+    "notes" TEXT NOT NULL DEFAULT '',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Trip_resortId_fkey" FOREIGN KEY ("resortId") REFERENCES "Resort" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

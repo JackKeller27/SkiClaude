@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Resort {
+  id        Int      @id @default(autoincrement())
+  name      String
+  state     String
+  lat       Float
+  lng       Float
+  trips     Trip[]
+  createdAt DateTime @default(now())
+}
+
+model Trip {
+  id           Int      @id @default(autoincrement())
+  resort       Resort   @relation(fields: [resortId], references: [id])
+  resortId     Int
+  date         DateTime
+  visitNumber  Int
+  companions   String   @default("")
+  favoriteRun  String   @default("")
+  notes        String   @default("")
+  createdAt    DateTime @default(now())
+}
