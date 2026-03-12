@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-type Resort = { id: number; name: string; state: string };
+import type { Resort } from "@/app/types";
 
 type Props = {
   resort: Resort;

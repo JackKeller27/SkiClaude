@@ -1,3 +1,5 @@
+"use client";
+
 import dynamic from "next/dynamic";
 
 const SkiMap = dynamic(() => import("./components/SkiMap"), { ssr: false });
