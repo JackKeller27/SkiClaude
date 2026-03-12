@@ -14,8 +14,15 @@ import UserMenu from "./UserMenu";
 import FilterBar, { type Filters, DEFAULT_FILTERS } from "./FilterBar";
 
 function createPinIcon(visited: boolean, count: number, isDark: boolean) {
-  const fill = visited ? "#ef4444" : (isDark ? "#475569" : "#9ca3af");
-  const stroke = visited ? "#b91c1c" : (isDark ? "#1e293b" : "#6b7280");
+  const fill = visited
+    ? (isDark ? "#ef4444" : "#93c5fd")
+    : (isDark ? "#475569" : "#9ca3af");
+  const stroke = visited
+    ? (isDark ? "#b91c1c" : "#1d4ed8")
+    : (isDark ? "#1e293b" : "#6b7280");
+  const holeColor = visited
+    ? (isDark ? "white" : "#1d4ed8")
+    : "white";
   const countLabel = count > 99 ? "99+" : count > 0 ? String(count) : "";
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40" width="28" height="40">
@@ -26,8 +33,8 @@ function createPinIcon(visited: boolean, count: number, isDark: boolean) {
     </defs>
     <path d="M14 2C8.477 2 4 6.477 4 12c0 7.5 10 22 10 22S24 19.5 24 12c0-5.523-4.477-10-10-10z"
           fill="${fill}" stroke="${stroke}" stroke-width="1.5" filter="url(#ps)"/>
-    <circle cx="14" cy="12" r="5.5" fill="white" opacity="${visited ? "0.95" : "0.55"}"/>
-    ${countLabel ? `<text x="14" y="15.5" text-anchor="middle" font-size="6.5" font-weight="800" fill="${fill}" font-family="-apple-system,sans-serif">${countLabel}</text>` : ""}
+    <circle cx="14" cy="12" r="5.5" fill="${holeColor}" opacity="${visited ? "0.95" : "0.55"}"/>
+    ${countLabel ? `<text x="14" y="15.5" text-anchor="middle" font-size="6.5" font-weight="800" fill="${isDark ? fill : (visited ? "#1d4ed8" : fill)}" font-family="-apple-system,sans-serif">${countLabel}</text>` : ""}
   </svg>`;
 
   return L.divIcon({
@@ -65,7 +72,7 @@ export default function SkiMap() {
   const [showFilters, setShowFilters] = useState(false);
   const [panelResort, setPanelResort] = useState<Resort | null>(null);
   const [panelDefaultLog, setPanelDefaultLog] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   const [conditions, setConditions] = useState<Record<number, Conditions>>({});
   const mapRef = useRef<LeafletMap | null>(null);
 
@@ -251,7 +258,7 @@ export default function SkiMap() {
         <div className={`absolute bottom-6 rounded-lg shadow-md px-3 py-2 text-xs z-[1000] transition-all ${panelResort ? "right-84" : "right-4"} ${isDark ? "bg-slate-800 text-slate-300" : "bg-white text-gray-600"}`}>
           <p className="font-semibold mb-1.5">Legend</p>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-block w-3 h-3 rounded-full bg-red-500 border-2 border-red-700" />
+            <span className={`inline-block w-3 h-3 rounded-full border-2 ${isDark ? "bg-red-500 border-red-700" : "bg-blue-300 border-blue-700"}`} />
             <span>Visited</span>
           </div>
           <div className="flex items-center gap-2">
