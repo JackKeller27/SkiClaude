@@ -6,6 +6,7 @@ export type Filters = {
   minVertical: number;
   minRuns: number;
   minAcreage: number;
+  minBase: number;
 };
 
 export const DEFAULT_FILTERS: Filters = {
@@ -14,6 +15,7 @@ export const DEFAULT_FILTERS: Filters = {
   minVertical: 0,
   minRuns: 0,
   minAcreage: 0,
+  minBase: 0,
 };
 
 const PASS_TYPES = ["IKON", "EPIC", "INDEPENDENT"];
@@ -40,6 +42,14 @@ const ACREAGE_OPTIONS = [
   { label: "200+", value: 200 },
   { label: "400+", value: 400 },
   { label: "700+", value: 700 },
+];
+
+const BASE_OPTIONS = [
+  { label: "Any", value: 0 },
+  { label: '6"', value: 6 },
+  { label: '12"', value: 12 },
+  { label: '24"', value: 24 },
+  { label: '36"', value: 36 },
 ];
 
 type Props = {
@@ -136,6 +146,22 @@ export default function FilterBar({ filters, onChange, isDark }: Props) {
               key={o.value}
               onClick={() => onChange({ ...filters, minAcreage: o.value })}
               className={`text-xs px-2.5 py-1 rounded transition-colors ${filters.minAcreage === o.value ? btnOn : btnOff}`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Base depth */}
+      <div>
+        <p className="text-[10px] uppercase tracking-wide mb-1.5">Base depth</p>
+        <div className="flex gap-1">
+          {BASE_OPTIONS.map((o) => (
+            <button
+              key={o.value}
+              onClick={() => onChange({ ...filters, minBase: o.value })}
+              className={`text-xs px-2.5 py-1 rounded transition-colors ${filters.minBase === o.value ? btnOn : btnOff}`}
             >
               {o.label}
             </button>

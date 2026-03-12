@@ -1,3 +1,8 @@
+export type Conditions = {
+  tempF: number | null;
+  baseInches: number;
+};
+
 export type Trip = {
   id: number;
   date: string;

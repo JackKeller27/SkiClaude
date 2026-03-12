@@ -6,7 +6,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { Map as LeafletMap } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { Resort } from "@/app/types";
+import type { Resort, Conditions } from "@/app/types";
+import type { ResortCondition } from "@/app/api/conditions/route";
 import ResortPopup from "./ResortPopup";
 import TripPanel from "./TripPanel";
 import UserMenu from "./UserMenu";
@@ -65,6 +66,7 @@ export default function SkiMap() {
   const [panelResort, setPanelResort] = useState<Resort | null>(null);
   const [panelDefaultLog, setPanelDefaultLog] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [conditions, setConditions] = useState<Record<number, Conditions>>({});
   const mapRef = useRef<LeafletMap | null>(null);
 
   const fetchResorts = useCallback(async () => {
@@ -83,6 +85,17 @@ export default function SkiMap() {
   }, [session]);
 
   useEffect(() => {
+    fetch("/api/conditions")
+      .then((r) => r.json())
+      .then((data: ResortCondition[]) => {
+        const map: Record<number, Conditions> = {};
+        for (const c of data) map[c.id] = { tempF: c.tempF, baseInches: c.baseInches };
+        setConditions(map);
+      })
+      .catch(() => {/* conditions unavailable — fail silently */});
+  }, []);
+
+  useEffect(() => {
     setTimeout(() => mapRef.current?.invalidateSize(), 300);
   }, [panelResort]);
 
@@ -98,6 +111,10 @@ export default function SkiMap() {
     if (r.verticalDrop < filters.minVertical) return false;
     if (r.numRuns < filters.minRuns) return false;
     if (r.acreage < filters.minAcreage) return false;
+    if (filters.minBase > 0) {
+      const cond = conditions[r.id];
+      if (!cond || cond.baseInches < filters.minBase) return false;
+    }
     return true;
   });
 
@@ -207,6 +224,7 @@ export default function SkiMap() {
                 <Popup minWidth={260} maxWidth={300}>
                   <ResortPopup
                     resort={resort}
+                    conditions={resort.id in conditions ? conditions[resort.id] : undefined}
                     onOpenPanel={(defaultLog = false) => {
                       setPanelDefaultLog(defaultLog);
                       setPanelResort(resort);
